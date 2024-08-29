@@ -43,7 +43,7 @@ var web_dom_collections_for_each = __webpack_require__(2437);
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.to-string.js
 var es_regexp_to_string = __webpack_require__(7114);
 // EXTERNAL MODULE: ./node_modules/@foliojs-fork/pdfkit/js/pdfkit.es5.js
-var pdfkit_es5 = __webpack_require__(7956);
+var pdfkit_es5 = __webpack_require__(468);
 ;// CONCATENATED MODULE: ./src/PDFDocument.js
 /* provided dependency */ var Buffer = __webpack_require__(4598)["Buffer"];
 
@@ -2474,6 +2474,55 @@ var DocMeasure = /*#__PURE__*/function () {
         }]
       };
     }
+    function buildStar(gapSize, color) {
+      var size = gapSize.fontSize * 0.55;
+      var points = 5;
+      var radius1 = size / 2;
+      var radius2 = size / 4;
+      var star = [];
+      var angle = Math.PI / 2 * 3;
+      var step = Math.PI / points;
+      var translateY = gapSize.height / gapSize.lineHeight + gapSize.descender - gapSize.fontSize / 3 - size / 2;
+      for (var i = 0; i < points; i++) {
+        var x = size / 2 + Math.cos(angle) * radius1;
+        var y = size / 2 + Math.sin(angle) * radius1 + translateY;
+        star.push({
+          x: x,
+          y: y
+        });
+        angle += step;
+        x = size / 2 + Math.cos(angle) * radius2;
+        y = size / 2 + Math.sin(angle) * radius2 + translateY;
+        star.push({
+          x: x,
+          y: y
+        });
+        angle += step;
+      }
+      return {
+        canvas: [{
+          x: 0,
+          y: 0,
+          points: star,
+          type: 'polyline',
+          color: color
+        }]
+      };
+    }
+    function buildBox(gapSize, color) {
+      // TODO: ascender-based calculations
+      var size = gapSize.fontSize / 2;
+      return {
+        canvas: [{
+          x: 0,
+          y: gapSize.height / gapSize.lineHeight + gapSize.descender - gapSize.fontSize / 3 - size / 2,
+          h: size,
+          w: size,
+          type: 'rect',
+          lineColor: color
+        }]
+      };
+    }
     var marker;
     var color = styleStack.getProperty('markerColor') || styleStack.getProperty('color') || 'black';
     switch (type) {
@@ -2485,6 +2534,12 @@ var DocMeasure = /*#__PURE__*/function () {
         break;
       case 'none':
         marker = {};
+        break;
+      case 'star':
+        marker = buildStar(gapSize, color);
+        break;
+      case 'box':
+        marker = buildBox(gapSize, color);
         break;
       case 'disc':
       default:
@@ -6256,7 +6311,7 @@ var OutputDocument = /*#__PURE__*/function () {
 }();
 /* harmony default export */ var src_OutputDocument = (OutputDocument);
 // EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__(2081);
+var FileSaver_min = __webpack_require__(3064);
 ;// CONCATENATED MODULE: ./src/browser-extensions/OutputDocumentBrowser.js
 
 
@@ -21786,7 +21841,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 7956:
+/***/ 468:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -62348,7 +62403,7 @@ module.exports = __webpack_require__(5349);
 
 /***/ }),
 
-/***/ 2081:
+/***/ 3064:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(a,b){if(true)!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (b),

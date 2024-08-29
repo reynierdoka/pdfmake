@@ -287,6 +287,55 @@ class DocMeasure {
 			};
 		}
 
+		function buildStar(gapSize, color) {
+			let size = gapSize.fontSize * 0.55;
+			let points = 5;
+			let radius1 = size / 2;
+			let radius2 = size / 4;
+			let star = [];
+			let angle = Math.PI / 2 * 3;
+			let step = Math.PI / points;
+
+			let translateY = (gapSize.height / gapSize.lineHeight) + gapSize.descender - (gapSize.fontSize / 3) - (size / 2);
+	
+			for (let i = 0; i < points; i++) {
+				let x = size / 2 + Math.cos(angle) * radius1;
+				let y = size / 2 + Math.sin(angle) * radius1 + translateY;
+				star.push({ x, y });
+				angle += step;
+
+				x = size / 2 + Math.cos(angle) * radius2;
+				y = size / 2 + Math.sin(angle) * radius2 + translateY;
+				star.push({ x, y });
+				angle += step;
+			}
+	
+			return {
+				canvas: [{
+					x: 0,
+					y: 0,
+					points: star,
+					type: 'polyline',
+					color: color
+				}]
+			};
+		}
+
+		function buildBox(gapSize, color) {
+			// TODO: ascender-based calculations
+			let size = gapSize.fontSize / 2;
+			return {
+				canvas: [{
+					x: 0,
+					y: (gapSize.height / gapSize.lineHeight) + gapSize.descender - (gapSize.fontSize / 3) - (size / 2),
+					h: size,
+					w: size,
+					type: 'rect',
+					lineColor: color
+				}]
+			};
+		}
+
 		let marker;
 		let color = styleStack.getProperty('markerColor') || styleStack.getProperty('color') || 'black';
 
@@ -301,6 +350,14 @@ class DocMeasure {
 
 			case 'none':
 				marker = {};
+				break;
+	
+			case 'star':
+				marker = buildStar(gapSize, color);
+				break;
+
+			case 'box':
+				marker = buildBox(gapSize, color);
 				break;
 
 			case 'disc':
